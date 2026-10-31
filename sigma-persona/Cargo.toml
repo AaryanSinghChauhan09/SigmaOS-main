@@ -1,0 +1,10 @@
+[package]
+name = "sigma-persona"
+version = "0.2.0"
+edition = "2021"
+authors = ["Aaryan Singh Chauhan <aaryan.singh.chauhan.09@gmail.com>"]
+description = "SigmaOS Persona Management - inspired by Omarchy Linux and Linux Mint"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+sigma-system = { path = "../sigma-system" }

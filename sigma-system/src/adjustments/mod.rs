@@ -1,6 +1,8 @@
-//! System adjustments inspired by Linux Mint mintsystem
+//! System Adjustments Module
+//! Inspired by Linux Mint mintsystem
 //! Manages CPU governors, sysctl memory tuning, and hardware optimization.
 
+/// GovernorMode represents the CPU governor mode for system optimization.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GovernorMode {
     Performance,
@@ -18,6 +20,10 @@ impl GovernorMode {
     }
 }
 
+/// SystemAdjuster manages system-level adjustments such as swappiness,
+/// VFS cache pressure, and CPU governor selection.
+///
+/// This is inspired by Linux Mint's mintsystem approach to system tuning.
 #[derive(Debug, Clone)]
 pub struct SystemAdjuster {
     swappiness: u32,
@@ -44,18 +50,24 @@ impl SystemAdjuster {
         }
     }
 
+    /// Returns the swappiness value (0-100).
     pub fn swappiness(&self) -> u32 {
         self.swappiness
     }
 
+    /// Returns the VFS cache pressure value.
     pub fn vfs_cache_pressure(&self) -> u32 {
         self.vfs_cache_pressure
     }
 
+    /// Returns the current governor mode.
     pub fn governor(&self) -> GovernorMode {
         self.governor
     }
 
+    /// Generates a sysctl configuration string for the current settings.
+    ///
+    /// The format is inspired by Linux Mint mintsystem sysctl configurations.
     pub fn generate_sysctl_conf(&self) -> String {
         format!(
             "# SigmaOS System Adjustments (mintsystem inspiration)\nvm.swappiness = {}\nvm.vfs_cache_pressure = {}\n",

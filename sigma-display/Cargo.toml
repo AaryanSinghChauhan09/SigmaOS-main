@@ -1,0 +1,10 @@
+[package]
+name = "sigma-display"
+version = "0.2.0"
+edition = "2021"
+authors = ["Aaryan Singh Chauhan <aaryan.singh.chauhan.09@gmail.com>"]
+description = "SigmaOS Display Management - inspired by Linux Mint and Omarchy Linux"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+sigma-system = { path = "../sigma-system" }

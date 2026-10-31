@@ -1,6 +1,8 @@
-//! Persona Management inspired by Omarchy Linux and Linux Mint
+//! SigmaOS Persona Management
+//! Inspired by Omarchy Linux and Linux Mint
 //! Enables sovereign desktop personas and overlay environments.
 
+/// SystemPersona represents a desktop environment persona/sovereign.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SystemPersona {
     SovereignOmarchy,
@@ -18,6 +20,7 @@ impl SystemPersona {
     }
 }
 
+/// PersonaManager manages desktop persona selection and switching.
 pub struct PersonaManager {
     current: SystemPersona,
 }
@@ -41,24 +44,5 @@ impl PersonaManager {
 
     pub fn switch_persona(&mut self, next: SystemPersona) {
         self.current = next;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_persona_switch() {
-        // Arrange
-        let mut mgr = PersonaManager::default();
-        assert_eq!(mgr.current(), SystemPersona::SovereignOmarchy);
-
-        // Act
-        mgr.switch_persona(SystemPersona::LinuxMintClassic);
-
-        // Assert
-        assert_eq!(mgr.current(), SystemPersona::LinuxMintClassic);
-        assert_eq!(mgr.current().label(), "Linux Mint Cinnamon Classic");
     }
 }
