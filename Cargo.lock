@@ -3,5 +3,54 @@
 version = 4
 
 [[package]]
+name = "sigma-adjustments"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
+name = "sigma-bootloader"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
+name = "sigma-display"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
+name = "sigma-drivers"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
+name = "sigma-kernel"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
+name = "sigma-persona"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
+name = "sigma-power"
+version = "0.2.0"
+dependencies = [
+ "sigma-system",
+]
+
+[[package]]
 name = "sigma-system"
 version = "0.2.0"

@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = [
+    "sigma-adjustments",
+    "sigma-bootloader",
+    "sigma-display",
+    "sigma-drivers",
+    "sigma-kernel",
+    "sigma-persona",
+    "sigma-power",
+    "sigma-system",
+]

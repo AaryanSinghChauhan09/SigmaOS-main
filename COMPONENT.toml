@@ -1,0 +1,24 @@
+[component]
+name = "Sigma"
+tier = 1
+subsystem = "system"
+maturity = "alpha"
+version = "0.2.0"
+license = "GPL-3.0-or-later"
+
+[interfaces]
+exported_crates = [
+    "sigma_adjustments",
+    "sigma_bootloader",
+    "sigma_display",
+    "sigma_drivers",
+    "sigma_kernel",
+    "sigma_persona",
+    "sigma_power",
+    "sigma_system"
+]
+
+[testing]
+unit_tests = true
+integration_tests = true
+deterministic = true
