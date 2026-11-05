@@ -538,7 +538,7 @@
     "update_status": "Updates not yet proven safe",
     "hw_validation_status": "No real hardware validation",
     "last_updated": "2026-11-05",
-    "total_components": 21,
+    "total_components": 55,
     "status_counts": {
       "Integrated": 16,
       "Prototype": 14,
