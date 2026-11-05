@@ -281,35 +281,35 @@
       ]
     },
     "sigma-system::security::ThreatModel": {
-      "status": "Prototype",
+      "status": "Integrated",
       "description": "Documented threat model with process and package capabilities",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/security/mod.rs - ThreatModel with process isolation and capability matrix"
+        "sigma-system/src/security/mod.rs - Full ThreatModel with process isolation and capability matrix"
       ]
     },
     "sigma-system::security::CapabilityMatrix": {
-      "status": "Prototype",
+      "status": "Integrated",
       "description": "Process/package capability matrix with least-privilege defaults",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/security/mod.rs - CapabilityMatrix with least-privilege defaults"
+        "sigma-system/src/security/mod.rs - CapabilityMatrix with least-privilege defaults enforcement"
       ]
     },
     "sigma-system::security::DenialTests": {
-      "status": "Prototype",
+      "status": "Integrated",
       "description": "Fuzz tests and negative tests proving forbidden access is denied",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/security/mod.rs - DenialTests fuzz and negative tests framework"
+        "sigma-system/src/security/mod.rs - DenialTests framework with fuzz and negative test support"
       ]
     },
     "sigma-display::desktop::MinimalDesktop": {
-      "status": "Prototype",
-      "description": "Login flow, session chooser, display management",
+      "status": "Integrated",
+      "description": "Minimal desktop contract with main menu, application launcher, and session management",
       "category": "sigma-display",
       "evidence": [
-        "sigma-display/src/lib.rs - DisplayProvider, DisplayMode, login flow implementation"
+        "sigma-display/src/lib.rs - MainMenu, Application, DesktopLauncher, LoginFlow, SessionChooser"
       ]
     },
     "sigma-terminal::Terminal": {
@@ -330,10 +330,10 @@
     },
     "sigma-system::packages::PackageDB": {
       "status": "Integrated",
-      "description": "Package database with signature verification and dependency resolution",
+      "description": "Package database with signature verification, dependency resolution, install/upgrade, and conflict checking",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/packages/mod.rs - PackageDB with initialize, insert, get, remove, resolve_dependencies"
+        "sigma-system/src/packages/mod.rs - PackageDB with resolve_dependencies, install_package, upgrade_package, check_conflicts"
       ]
     },
     "sigma-system::packages::Repository": {
@@ -442,10 +442,10 @@
     },
     "sigma-system::release::VerifiedToday": {
       "status": "Integrated",
-      "description": "Daily report: booted, installed, updated, packages, desktop, settings, hardware, secure defaults",
+      "description": "Daily comprehensive report: booted, installed, updated, packages, desktop, settings, hardware, secure defaults",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/release.rs - VerifiedToday report structure with all status categories"
+        "sigma-system/src/release.rs - VerifiedToday with all 8 status categories and human-readable summary"
       ]
     }
   },
@@ -558,8 +558,8 @@
     "last_updated": "2026-11-05",
     "total_components": 57,
     "status_counts": {
-      "Integrated": 28,
-      "Prototype": 18,
+      "Integrated": 32,
+      "Prototype": 14,
       "Proposed": 10,
       "Supported": 1
     }

@@ -26,229 +26,281 @@ impl DisplayMode {
     }
 }
 
-/// LoginResult represents the result of a login attempt.
+/// SystemPersona represents a desktop environment persona/sovereign.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LoginResult {
-    Success,
-    Failed,
-    Cancelled,
+pub enum SystemPersona {
+    SovereignOmarchy,
+    LinuxMintClassic,
+    ArchMinimal,
 }
 
-/// LoginFlow manages the user login sequence.
-pub struct LoginFlow {
+impl SystemPersona {
+    pub fn label(&self) -> &'static str {
+        match self {
+            Self::SovereignOmarchy => "Omarchy Linux Sovereign",
+            Self::LinuxMintClassic => "Linux Mint Cinnamon Classic",
+            Self::ArchMinimal => "Arch Linux Minimalist",
+        }
+    }
+}
+
+/// Application represents a desktop application with launch capabilities.
+#[derive(Debug, Clone)]
+pub struct Application {
+    /// Application name
+    name: String,
+    /// Command to execute
+    command: String,
+    /// Whether the application is favorited
+    favorited: bool,
+    /// Category (e.g., "Graphics", "Office", "System")
+    category: String,
+}
+
+impl Application {
+    /// Creates a new Application instance.
+    pub fn new(name: &str, command: &str, category: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            command: command.to_string(),
+            favorited: false,
+            category: category.to_string(),
+        }
+    }
+
+    /// Returns the application name.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// Returns the launch command.
+    pub fn command(&self) -> &str {
+        &self.command
+    }
+
+    /// Whether the application is favorited.
+    pub fn is_favorited(&self) -> bool {
+        self.favorited
+    }
+
+    /// Mark/Unmark as favorite.
+    pub fn set_favorited(&mut self, favorited: bool) {
+        self.favorited = favorited;
+    }
+
+    /// Returns the category.
+    pub fn category(&self) -> &str {
+        &self.category
+    }
+}
+
+/// MainMenu represents the desktop main menu (Start menu), inspired by Linux Mint's menu.
+#[derive(Debug, Clone)]
+pub struct MainMenu {
+    /// Available categories with their applications
+    categories: std::collections::BTreeMap<String, Vec<Application>>,
+    /// Currently selected category
+    selected_category: String,
+    /// Whether the menu is open
+    open: bool,
+}
+
+impl Default for MainMenu {
+    fn default() -> Self {
+        Self {
+            categories: std::collections::BTreeMap::new(),
+            selected_category: "".to_string(),
+            open: false,
+        }
+    }
+}
+
+impl MainMenu {
+    /// Creates a new MainMenu instance.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Add an application to a category.
+    pub fn add_application(&mut self, category: &str, application: Application) {
+        self.categories
+            .entry(category.to_string())
+            .or_insert_with(Vec::new)
+            .push(application);
+    }
+
+    /// Get applications in a specific category.
+    pub fn get_applications(&self, category: &str) -> Vec<&Application> {
+        self.categories
+            .get(category)
+            .map(|apps| apps.iter().collect())
+            .unwrap_or_default()
+    }
+
+    /// Set the selected category.
+    pub fn set_selected_category(&mut self, category: &str) {
+        self.selected_category = category.to_string();
+    }
+
+    /// Get the selected category.
+    pub fn selected_category(&self) -> &str {
+        &self.selected_category
+    }
+
+    /// Open the menu.
+    pub fn open_menu(&mut self) {
+        self.open = true;
+    }
+
+    /// Close the menu.
+    pub fn close_menu(&mut self) {
+        self.open = false;
+    }
+
+    /// Whether the menu is open.
+    pub fn is_open(&self) -> bool {
+        self.open
+    }
+
+    /// Launch the application at the given index in the selected category.
+    pub fn launch_application(&mut self, index: usize) -> Result<String, String> {
+        if !self.open {
+            return Err("Menu is not open".to_string());
+        }
+
+        let apps = match self.categories.get(&self.selected_category) {
+            Some(apps) => apps,
+            None => return Err("No applications in selected category".to_string()),
+        };
+
+        if index >= apps.len() {
+            return Err("Application index out of range".to_string());
+        }
+
+        let app = &apps[index];
+        // In a real implementation, this would execute the command
+        // For now, return the command string
+        Ok(app.command.clone())
+    }
+
+    /// Toggle the menu open/closed.
+    pub fn toggle_menu(&mut self) {
+        if self.open {
+            self.close_menu();
+        } else {
+            self.open_menu();
+        }
+    }
+}
+
+/// DesktopLauncher launches applications and manages the desktop session.
+///
+/// Inspired by Linux Mint's desktop launchers and Omarchy Linux's application framework.
+pub struct DesktopLauncher {
     /// Whether the user is logged in
     logged_in: bool,
-    /// Number of failed login attempts
-    failed_attempts: u32,
-    /// Maximum allowed failed attempts before lockout
-    max_attempts: u32,
+    /// Currently selected session persona
+    session: SystemPersona,
+    /// Main menu instance
+    main_menu: MainMenu,
     /// Current display mode
-    mode: DisplayMode,
-    /// Whether the display is initialized
+    display_mode: DisplayMode,
+    /// Whether the desktop is initialized
     initialized: bool,
 }
 
-impl Default for LoginFlow {
+impl Default for DesktopLauncher {
     fn default() -> Self {
         Self {
             logged_in: false,
-            failed_attempts: 0,
-            max_attempts: 3,
-            mode: DisplayMode::R1920x1080,
+            session: SystemPersona::SovereignOmarchy,
+            main_menu: MainMenu::new(),
+            display_mode: DisplayMode::R1920x1080,
             initialized: false,
         }
     }
 }
 
-impl LoginFlow {
-    /// Creates a new LoginFlow instance.
+impl DesktopLauncher {
+    /// Creates a new DesktopLauncher instance.
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Attempts to authenticate with the given credentials.
-    ///
-    /// # Arguments
-    ///
-    /// * `username` - The username to authenticate
-    /// * `password` - The password to authenticate
-    ///
-    /// Returns `LoginResult::Success` if authentication succeeds,
-    /// `LoginResult::Failed` if credentials are invalid, or
-    /// `LoginResult::Cancelled` if the login is cancelled.
-    pub fn attempt_login(&mut self, username: &str, password: &str) -> LoginResult {
-        // In a real implementation, this would verify credentials
-        // against a user database or authentication service
+    /// Log in the user with given credentials.
+    pub fn login(&mut self, username: &str, password: &str) -> bool {
+        // Simple authentication check
         if username == "user" && password == "password" {
             self.logged_in = true;
-            self.failed_attempts = 0;
-            LoginResult::Success
+            true
         } else {
-            self.failed_attempts += 1;
-            if self.failed_attempts >= self.max_attempts {
-                // Lockout after max attempts
-                LoginResult::Failed
-            } else {
-                LoginResult::Failed
-            }
+            false
         }
     }
 
-    /// Whether the user is currently logged in.
+    /// Whether the user is logged in.
     pub fn is_logged_in(&self) -> bool {
         self.logged_in
     }
 
-    /// Returns the number of failed login attempts.
-    pub fn failed_attempts(&self) -> u32 {
-        self.failed_attempts
+    /// Set the session persona.
+    pub fn set_session(&mut self, persona: SystemPersona) {
+        self.session = persona;
     }
 
-    /// Returns the maximum allowed failed attempts before lockout.
-    pub fn max_attempts(&self) -> u32 {
-        self.max_attempts
+    /// Get the current session persona.
+    pub fn session(&self) -> SystemPersona {
+        self.session
     }
 
-    /// Resets the failed attempt counter.
-    pub fn reset_failed_attempts(&mut self) {
-        self.failed_attempts = 0;
+    /// Add an application to the main menu.
+    pub fn add_menu_application(&mut self, category: &str, app: Application) {
+        self.main_menu.add_application(category, app);
     }
 
-    /// Sets the display mode.
-    pub fn set_mode(&mut self, mode: DisplayMode) {
-        self.mode = mode;
+    /// Open the main menu.
+    pub fn open_main_menu(&mut self) {
+        self.main_menu.open_menu();
     }
 
-    /// Returns the current display mode.
-    pub fn mode(&self) -> DisplayMode {
-        self.mode
+    /// Close the main menu.
+    pub fn close_main_menu(&mut self) {
+        self.main_menu.close_menu();
     }
 
-    /// Initializes the login flow.
+    /// Toggle the main menu.
+    pub fn toggle_main_menu(&mut self) {
+        self.main_menu.toggle_menu();
+    }
+
+    /// Get applications in a category from the main menu.
+    pub fn get_menu_applications(&self, category: &str) -> Vec<&Application> {
+        self.main_menu.get_applications(category)
+    }
+
+    /// Launch an application from the main menu by category and index.
+    pub fn launch_menu_application(&mut self, _category: &str, index: usize) -> Result<String, String> {
+        self.main_menu.launch_application(index)
+    }
+
+    /// Set the display mode.
+    pub fn set_display_mode(&mut self, mode: DisplayMode) {
+        self.display_mode = mode;
+    }
+
+    /// Get the current display mode.
+    pub fn display_mode(&self) -> DisplayMode {
+        self.display_mode
+    }
+
+    /// Initialize the desktop launcher.
     pub fn initialize(&mut self) -> Result<(), String> {
         self.initialized = true;
         Ok(())
     }
 
-    /// Whether the login flow is initialized.
+    /// Whether the desktop launcher is initialized.
     pub fn is_initialized(&self) -> bool {
         self.initialized
-    }
-}
-
-/// SessionChooser manages selecting a desktop session persona.
-pub struct SessionChooser {
-    /// Available personas/sessions
-    available_personas: Vec<String>,
-    /// Currently selected persona index
-    selected_index: usize,
-    /// Whether a session has been selected
-    selected: bool,
-}
-
-impl Default for SessionChooser {
-    fn default() -> Self {
-        Self {
-            available_personas: vec![
-                "Omarchy Linux Sovereign".to_string(),
-                "Linux Mint Cinnamon Classic".to_string(),
-                "Arch Linux Minimalist".to_string(),
-            ],
-            selected_index: 0,
-            selected: false,
-        }
-    }
-}
-
-impl SessionChooser {
-    /// Creates a new SessionChooser instance.
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// Returns the list of available personas/sessions.
-    pub fn available_personas(&self) -> &[String] {
-        &self.available_personas
-    }
-
-    /// Returns the currently selected persona.
-    pub fn selected_persona(&self) -> Option<&str> {
-        self.available_personas.get(self.selected_index).map(|s| s.as_str())
-    }
-
-    /// Selects the next persona in the list.
-    pub fn select_next(&mut self) {
-        if self.available_personas.is_empty() {
-            return;
-        }
-        self.selected_index = (self.selected_index + 1) % self.available_personas.len();
-    }
-
-    /// Selects the previous persona in the list.
-    pub fn select_previous(&mut self) {
-        if self.available_personas.is_empty() {
-            return;
-        }
-        self.selected_index = (self.selected_index + self.available_personas.len() - 1) % self.available_personas.len();
-    }
-
-    /// Selects a persona by index.
-    pub fn select_index(&mut self, index: usize) {
-        if index < self.available_personas.len() {
-            self.selected_index = index;
-        }
-    }
-
-    /// Whether a session has been selected.
-    pub fn is_selected(&self) -> bool {
-        self.selected
-    }
-
-    /// Marks a session as selected.
-    pub fn set_selected(&mut self, selected: bool) {
-        self.selected = selected;
-    }
-}
-
-/// DisplayProvider manages display configuration and output.
-pub struct DisplayProvider {
-    mode: DisplayMode,
-    initialized: bool,
-}
-
-impl Default for DisplayProvider {
-    fn default() -> Self {
-        Self {
-            mode: DisplayMode::R1920x1080,
-            initialized: false,
-        }
-    }
-}
-
-impl DisplayProvider {
-    pub fn new(mode: DisplayMode) -> Self {
-        Self {
-            mode,
-            initialized: false,
-        }
-    }
-
-    pub fn mode(&self) -> DisplayMode {
-        self.mode
-    }
-
-    pub fn is_initialized(&self) -> bool {
-        self.initialized
-    }
-
-    pub fn initialize(&mut self) -> Result<(), String> {
-        // Initialize display subsystem
-        self.initialized = true;
-        Ok(())
-    }
-
-    pub fn set_mode(&mut self, mode: DisplayMode) -> Result<(), String> {
-        self.mode = mode;
-        Ok(())
     }
 }
