@@ -4,7 +4,7 @@
   "statuses": {
     "bootloader::BootloaderType": {
       "status": "Integrated",
-      "description": "M1n1 bootloader type with UEFI/UBOOT/Coreboot support",
+      "description": "M1n1 bootloader type enum with UEFI/UBOOT/Coreboot support",
       "category": "bootloader",
       "evidence": [
         "sigma-bootloader/src/lib.rs - BootloaderType enum"
@@ -12,7 +12,7 @@
     },
     "bootloader::BootPhase::Init": {
       "status": "Prototype",
-      "description": "Init phase implementation",
+      "description": "Init phase implementation with phase tracking",
       "category": "bootloader",
       "evidence": [
         "sigma-bootloader/src/lib.rs - boot phase framework"
@@ -20,10 +20,10 @@
     },
     "bootloader::BootPhase::Fallback": {
       "status": "Prototype",
-      "description": "Fallback/rescue flow",
+      "description": "Fallback/rescue flow with rescue entry selection",
       "category": "bootloader",
       "evidence": [
-        "sigma-bootloader/src/lib.rs - fallback flow"
+        "sigma-bootloader/src/lib.rs - fallback flow structures"
       ]
     },
     "kernel::KernelProvider::initialize": {
@@ -49,7 +49,7 @@
       "description": "Hardware detection returning GPU, network, storage, input inventories",
       "category": "drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - hardware detection structures"
+        "sigma-drivers/src/lib.rs - hardware detection structures and virtio enumeration"
       ]
     },
     "drivers::DriverManager::detect_hardware": {
@@ -117,7 +117,7 @@
       "description": "Boot phase-based initialization with Omarchy-style bootflow",
       "category": "bootloader",
       "evidence": [
-        "sigma-bootloader/src/lib.rs - BootloaderManager"
+        "sigma-bootloader/src/lib.rs - BootloaderManager::initialize method"
       ]
     },
     "kernel::KernelProvider::new": {
@@ -157,7 +157,7 @@
       "description": "Feature register tracking component statuses per roadmap P0",
       "category": "feature-register.json",
       "evidence": [
-        "Created feature-register.json with 48 components"
+        "Created feature-register.json with 55 components tracked (Proposed/Prototype/Integrated/Supported)"
       ]
     },
     "sigma-system::installer::atomic_install": {
@@ -165,7 +165,7 @@
       "description": "Atomic installation with rollback guarantee and preflight checks",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/installer.rs module structure prepared"
+        "sigma-system/src/installer.rs - module structure with SafeInstaller struct"
       ]
     },
     "sigma-system::installer::atomic_update": {
@@ -177,11 +177,11 @@
       ]
     },
     "sigma-system::installer::atomic_rollback": {
-      "status": "Proposed",
+      "status": "Prototype",
       "description": "Guaranteed rollback to previous system state",
       "category": "sigma-system",
       "evidence": [
-        "Module structure prepared in sigma-system/src/installer.rs (pending compilation)"
+        "sigma-system/src/installer.rs - SafeInstaller::rollback method"
       ]
     },
     "sigma-system::update_manager::UpdateManager::begin_update": {
@@ -189,7 +189,7 @@
       "description": "Begin update operation with snapshot for rollback",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/installer.rs module structure"
+        "sigma-system/src/installer.rs - UpdateManager::begin_update method"
       ]
     },
     "sigma-kernel::boot_info::BootInfo": {
@@ -245,7 +245,7 @@
       "description": "QEMU virtio GPU support with basic 2D acceleration",
       "category": "sigma-drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - virtio device enumeration"
+        "sigma-drivers/src/lib.rs - virtio device enumeration structures"
       ]
     },
     "sigma-drivers::hw::VirtioNetwork": {
@@ -253,7 +253,7 @@
       "description": "QEMU virtio network interface with ethernet support",
       "category": "sigma-drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - network device driver"
+        "sigma-drivers/src/lib.rs - network device driver structures"
       ]
     },
     "sigma-drivers::hw::VirtioSerial": {
@@ -261,7 +261,7 @@
       "description": "QEMU virtio serial console support",
       "category": "sigma-drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - serial device driver"
+        "sigma-drivers/src/lib.rs - serial device driver structures"
       ]
     },
     "sigma-display::hw::VirtioGPU": {
@@ -285,7 +285,7 @@
       "description": "Documented threat model with process and package capabilities",
       "category": "sigma-system",
       "evidence": [
-        "Framework planned in sigma-system"
+        "Framework planned in sigma-system - capability matrix structure prepared"
       ]
     },
     "sigma-system::security::CapabilityMatrix": {
@@ -293,7 +293,7 @@
       "description": "Process/package capability matrix with least-privilege defaults",
       "category": "sigma-system",
       "evidence": [
-        "Framework planned in sigma-system"
+        "Framework planned in sigma-system - capability types and defaults structure"
       ]
     },
     "sigma-system::security::DenialTests": {
@@ -309,7 +309,7 @@
       "description": "Minimal desktop contract: display, input, launch one app, report crashes",
       "category": "sigma-display",
       "evidence": [
-        "Display and input structures in sigma-display"
+        "Display and input structures in sigma-display/src/lib.rs - DisplayMode and input handling"
       ]
     },
     "sigma-terminal::Terminal": {
@@ -333,7 +333,7 @@
       "description": "Package database with signature verification and dependency resolution",
       "category": "sigma-system",
       "evidence": [
-        "Package management infrastructure planned"
+        "Package management infrastructure planned in sigma-system"
       ]
     },
     "sigma-system::packages::Repository": {
@@ -357,7 +357,7 @@
       "description": "Daily report: booted, installed, updated, packages, desktop, settings, hardware, secure defaults",
       "category": "sigma-system",
       "evidence": [
-        "Report structure planned"
+        "Report structure planned in sigma-system"
       ]
     },
     "sigma-system::release::KnownIssues": {
@@ -365,7 +365,7 @@
       "description": "Concise list of known issues with recovery instructions",
       "category": "sigma-system",
       "evidence": [
-        "Known issues list planned (pending implementation)"
+        "Known issues list planned in sigma-system"
       ]
     },
     "sigma-system::release::SupportedHardware": {
@@ -373,7 +373,7 @@
       "description": "List of supported hardware with test results and logs",
       "category": "sigma-system",
       "evidence": [
-        "Hardware support matrix planned"
+        "Hardware support matrix planned in sigma-system"
       ]
     },
     "kernel::KernelMode": {
@@ -389,7 +389,7 @@
       "description": "Boot information structure passed from bootloader to kernel",
       "category": "kernel",
       "evidence": [
-        "sigma-kernel/src/lib.rs - BootInfo struct"
+        "sigma-kernel/src/lib.rs - BootInfo struct with command_line, memory_map, framebuffer"
       ]
     },
     "kernel::FramebufferInfo": {
@@ -397,7 +397,7 @@
       "description": "Framebuffer information for display initialization",
       "category": "kernel",
       "evidence": [
-        "sigma-kernel/src/lib.rs - FramebufferInfo struct"
+        "sigma-kernel/src/lib.rs - FramebufferInfo struct with width, height, pitch, format"
       ]
     },
     "display::DisplayMode::R1920x1080": {
@@ -430,6 +430,22 @@
       "category": "adjustments",
       "evidence": [
         "sigma-adjustments/src/lib.rs - GovernorMode enum"
+      ]
+    },
+    "adjustments::ConfigValidator::validate": {
+      "status": "Prototype",
+      "description": "Configuration validation with schema checking",
+      "category": "adjustments",
+      "evidence": [
+        "sigma-adjustments/src/lib.rs - config validation structures"
+      ]
+    },
+    "sigma-system::update_manager::UpdateManager::complete_update": {
+      "status": "Prototype",
+      "description": "Complete update operation with rollback guarantee",
+      "category": "sigma-system",
+      "evidence": [
+        "sigma-system/src/installer.rs - UpdateManager::complete_update method"
       ]
     }
   },
@@ -472,7 +488,8 @@
     ],
     "adjustments": [
       "SystemAdjuster::validate",
-      "adjustments::GovernorMode::Performance"
+      "adjustments::GovernorMode::Performance",
+      "adjustments::ConfigValidator::validate"
     ],
     "system": [
       "BaseRuntimeContract::initialize"
@@ -495,7 +512,8 @@
       "sigma-system::packages::SigningKey",
       "sigma-system::release::VerifiedToday",
       "sigma-system::release::KnownIssues",
-      "sigma-system::release::SupportedHardware"
+      "sigma-system::release::SupportedHardware",
+      "sigma-system::update_manager::UpdateManager::complete_update"
     ],
     "sigma-kernel": [
       "sigma-kernel::boot_info::BootInfo",
@@ -538,11 +556,11 @@
     "update_status": "Updates not yet proven safe",
     "hw_validation_status": "No real hardware validation",
     "last_updated": "2026-11-05",
-    "total_components": 55,
+    "total_components": 57,
     "status_counts": {
       "Integrated": 16,
-      "Prototype": 14,
-      "Proposed": 24,
+      "Prototype": 17,
+      "Proposed": 23,
       "Supported": 1
     }
   }
