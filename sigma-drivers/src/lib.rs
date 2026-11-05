@@ -268,7 +268,7 @@ impl DriverManager {
     /// Install a driver with rollback support.
     ///
     /// Installs a driver and provides rollback capability if the installation fails.
-    pub fn install_driver(&mut self, driver_name: &str, driver_path: &str) -> Result<(), String> {
+    pub fn install_driver(&mut self, driver_name: &str, _driver_path: &str) -> Result<(), String> {
         // First detect hardware to ensure compatibility
         let inventory = HardwareInventory::detect_hardware();
 
