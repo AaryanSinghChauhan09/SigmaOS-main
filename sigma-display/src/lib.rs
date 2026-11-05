@@ -1,4 +1,4 @@
-/// SigmaOS Display Management
+// SigmaOS Display Management
 /// Inspired by Linux Mint and Omarchy Linux
 /// Handles display configuration and output management.
 
@@ -193,6 +193,133 @@ impl MainMenu {
     }
 }
 
+/// LoginFlow represents the user authentication and session management flow.
+///
+/// Inspired by Linux Mint's login screen and Omarchy Linux's session management.
+/// Supports authentication, lockout protection, and session persistence.
+pub struct LoginFlow {
+    /// Whether the user is authenticated
+    authenticated: bool,
+    /// Current user session persona
+    session: SystemPersona,
+    /// Failed login attempt counter
+    failed_attempts: u32,
+    /// Maximum allowed failed attempts before lockout
+    max_attempts: u32,
+    /// Whether the session is locked
+    locked: bool,
+    /// Lockout timeout in seconds
+    lockout_timeout: u64,
+    /// Last failed attempt timestamp
+    last_failed_at: Option<u64>,
+}
+
+impl Default for LoginFlow {
+    fn default() -> Self {
+        Self {
+            authenticated: false,
+            session: SystemPersona::SovereignOmarchy,
+            failed_attempts: 0,
+            max_attempts: 3,
+            locked: false,
+            lockout_timeout: 300,
+            last_failed_at: None,
+        }
+    }
+}
+
+impl LoginFlow {
+    /// Creates a new LoginFlow instance.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Authenticate the user with given credentials.
+    ///
+    /// Returns `true` if authentication succeeds, `false` otherwise.
+    /// Implements lockout protection after max_attempts failed tries.
+    pub fn authenticate(&mut self, username: &str, password: &str) -> bool {
+        // Check if session is locked
+        if self.locked {
+            // Check if lockout timeout has expired
+            if let Some(last) = self.last_failed_at {
+                let now = std::time::SystemTime::now()
+                    .duration_since(std::time::SystemTime::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_secs();
+                if now - last > self.lockout_timeout {
+                    self.locked = false;
+                    self.failed_attempts = 0;
+                }
+            }
+            return false;
+        }
+
+        // Simple authentication check (in real system, verify against user database)
+        if username == "user" && password == "password" {
+            self.authenticated = true;
+            self.session = SystemPersona::SovereignOmarchy;
+            self.failed_attempts = 0;
+            self.locked = false;
+            self.last_failed_at = None;
+            true
+        } else {
+            self.failed_attempts += 1;
+            self.last_failed_at = Some(
+                std::time::SystemTime::now()
+                    .duration_since(std::time::SystemTime::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_secs(),
+            );
+
+            // Lock out after max_attempts
+            if self.failed_attempts >= self.max_attempts {
+                self.locked = true;
+            }
+            false
+        }
+    }
+
+    /// Whether the user is authenticated.
+    pub fn is_authenticated(&self) -> bool {
+        self.authenticated
+    }
+
+    /// Get the current session persona.
+    pub fn session(&self) -> SystemPersona {
+        self.session
+    }
+
+    /// Reset the login flow (e.g., after reboot or session reset).
+    pub fn reset(&mut self) {
+        self.authenticated = false;
+        self.session = SystemPersona::SovereignOmarchy;
+        self.failed_attempts = 0;
+        self.locked = false;
+        self.last_failed_at = None;
+    }
+
+    /// Whether the session is currently locked due to too many failed attempts.
+    pub fn is_locked(&self) -> bool {
+        self.locked
+    }
+
+    /// Get the number of failed login attempts.
+    pub fn failed_attempts(&self) -> u32 {
+        self.failed_attempts
+    }
+
+    /// Get the maximum allowed failed attempts before lockout.
+    pub fn max_attempts(&self) -> u32 {
+        self.max_attempts
+    }
+
+    /// Get the lockout timeout in seconds.
+    pub fn lockout_timeout(&self) -> u64 {
+        self.lockout_timeout
+    }
+}
+
 /// DesktopLauncher launches applications and manages the desktop session.
 ///
 /// Inspired by Linux Mint's desktop launchers and Omarchy Linux's application framework.
@@ -207,6 +334,8 @@ pub struct DesktopLauncher {
     display_mode: DisplayMode,
     /// Whether the desktop is initialized
     initialized: bool,
+    /// Login flow for authentication
+    login_flow: LoginFlow,
 }
 
 impl Default for DesktopLauncher {
@@ -217,6 +346,7 @@ impl Default for DesktopLauncher {
             main_menu: MainMenu::new(),
             display_mode: DisplayMode::R1920x1080,
             initialized: false,
+            login_flow: LoginFlow::new(),
         }
     }
 }
@@ -229,13 +359,11 @@ impl DesktopLauncher {
 
     /// Log in the user with given credentials.
     pub fn login(&mut self, username: &str, password: &str) -> bool {
-        // Simple authentication check
-        if username == "user" && password == "password" {
+        let result = self.login_flow.authenticate(username, password);
+        if result {
             self.logged_in = true;
-            true
-        } else {
-            false
         }
+        result
     }
 
     /// Whether the user is logged in.

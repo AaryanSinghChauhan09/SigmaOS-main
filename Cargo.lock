@@ -31,6 +31,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "sigma-file-manager"
+version = "0.1.0"
+
+[[package]]
 name = "sigma-kernel"
 version = "0.2.0"
 dependencies = [
@@ -54,3 +58,7 @@ dependencies = [
 [[package]]
 name = "sigma-system"
 version = "0.2.0"
+
+[[package]]
+name = "sigma-terminal"
+version = "0.1.0"

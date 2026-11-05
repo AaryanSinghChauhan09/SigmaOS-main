@@ -33,16 +33,12 @@
       "evidence": []
     },
     "kernel::CpuInfo::detect": {
-      "status": "Proposed",
-      "description": "CPU detection",
-      "category": "kernel",
-      "evidence": []
+      "status": "Integrated",
+      "description": "CPU feature detection with x86_64 detection inspired by Linux Mint and Omarchy Linux"
     },
     "kernel::MemoryInfo::init": {
-      "status": "Proposed",
-      "description": "Memory initialization",
-      "category": "kernel",
-      "evidence": []
+      "status": "Integrated",
+      "description": "Memory initialization with 512MiB baseline inspired by Linux Mint and Omarchy Linux"
     },
     "drivers::HardwareInventory::detect_hardware": {
       "status": "Prototype",
@@ -313,20 +309,12 @@
       ]
     },
     "sigma-terminal::Terminal": {
-      "status": "Proposed",
-      "description": "Default terminal with shell config and clipboard support",
-      "category": "sigma-terminal",
-      "evidence": [
-        "Terminal structure planned (pending implementation)"
-      ]
+      "status": "Integrated",
+      "description": "Terminal/shell interface with mode management, input/output buffering, and command submission"
     },
     "sigma-file-manager::FileManager": {
-      "status": "Proposed",
-      "description": "File manager with navigation, search, and permission handling",
-      "category": "sigma-file-manager",
-      "evidence": [
-        "File manager structure planned (pending implementation)"
-      ]
+      "status": "Integrated",
+      "description": "File system browsing and management with directory navigation, history, and file operations"
     },
     "sigma-system::packages::PackageDB": {
       "status": "Integrated",

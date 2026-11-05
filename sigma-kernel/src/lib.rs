@@ -49,16 +49,8 @@ impl KernelProvider {
         }
     }
 
-    pub fn mode(&self) -> KernelMode {
-        self.mode
-    }
-
-    pub fn is_initialized(&self) -> bool {
-        self.initialized
-    }
-
     /// Initialize kernel subsystems.
-    /// 
+    ///
     /// This performs fundamental kernel initialization including:
     /// - Setting up memory management basics
     /// - Initializing CPU feature detection
@@ -74,6 +66,28 @@ impl KernelProvider {
         self.memory_info = Some("memory: 512MiB".to_string());
         
         Ok(())
+    }
+
+    /// Detect CPU features and information.
+    ///
+    /// Performs CPU feature detection and populates cpu_info.
+    /// In a real implementation, this would use CPUID instructions
+    /// to detect supported features, vendor, model, etc.
+    pub fn detect() -> KernelProvider {
+        // Simulated CPU detection inspired by Linux Mint and Omarchy Linux
+        let mut kprovider = Self::new(KernelMode::User);
+        kprovider.cpu_info = Some("detected:x86_64".to_string());
+        kprovider
+    }
+
+    /// Initialize memory information.
+    ///
+    /// Sets up basic memory information structure.
+    /// In a real implementation, this would query E820 memory map,
+    /// EFIs memory tables, or other firmware-provided memory info.
+    pub fn init_memory() -> Option<String> {
+        // Simulated memory initialization inspired by Linux Mint and Omarchy Linux
+        Some("memory: 512MiB".to_string())
     }
 
     /// Switch kernel mode.

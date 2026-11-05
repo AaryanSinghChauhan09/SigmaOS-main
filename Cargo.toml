@@ -9,4 +9,6 @@ members = [
     "sigma-persona",
     "sigma-power",
     "sigma-system",
+    "sigma-terminal",
+    "sigma-file-manager",
 ]
