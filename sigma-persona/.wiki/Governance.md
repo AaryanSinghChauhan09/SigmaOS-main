@@ -1,7 +1,7 @@
-# SigmaOS sigma-persona Wiki
+# SigmaOS {crate_name} Wiki
 
 ## Crate Responsibility
-Base runtime contract and health monitoring aligned with Omarchy Linux principles.
+Persona/session management with SystemPersona (SovereignOmarchy/LinuxMintClassic/ArchMinimal), PersonaManager (save/restore lifecycle), PersonaSave (timestamped saves, delete/restore)
 
 ## Design Principles (103 Principles)
 The following 103 design principles are embedded across all SigmaOS crates, ensuring consistency and quality:
@@ -112,24 +112,24 @@ The following 103 design principles are embedded across all SigmaOS crates, ensu
 
 ## Canonical Repo Map
 - SigmaOS-main: Main repository with linking to all other repos
-- SigmaOS-sigma-system: Core system crate with runtime contract
-- SigmaOS-sigma-kernel: Kernel core with boot information structures
-- SigmaOS-sigma-bootloader: Bootloader with M1n1 bootflow
-- SigmaOS-sigma-drivers: Hardware driver abstractions
-- SigmaOS-sigma-display: Display management with login flow
-- SigmaOS-sigma-power: Power management with battery logic
-- SigmaOS-sigma-persona: Persona/session management
-- SigmaOS-sigma-adjustments: Config and settings management
+- SigmaOS-sigma-system: Core system crate with runtime contract, SafeInstaller, security model, package ecosystem, release quality gates
+- SigmaOS-sigma-kernel: Kernel core with boot information structures, BootInfo, FramebufferInfo, CPU/mode detection
+- SigmaOS-sigma-bootloader: Bootloader with M1n1 bootflow, boot phases, boot menu, fallback/rescue flow
+- SigmaOS-sigma-drivers: Hardware driver abstractions, QEMU virtio support (VirtioGPU/VirtioNetwork/VirtioSerial)
+- SigmaOS-sigma-display: Display management with login flow, MainMenu (Start menu inspired by Linux Mint), Application launcher, DesktopLauncher
+- SigmaOS-sigma-power: Power management with PowerManager, PowerMode (Performance/Powersave/Balanced/Auto), ACPI table parsing, SleepResume (auto-suspend/auto-resume with mem state)
+- SigmaOS-sigma-persona: Persona/session management with SystemPersona (SovereignOmarchy/LinuxMintClassic/ArchMinimal), PersonaManager (save/restore lifecycle), PersonaSave (timestamped saves, delete/restore)
+- SigmaOS-sigma-adjustments: Config schema and validation (GovernorMode, SystemAdjuster, ConfigSchema with migration from v0.1/v0.2), swappiness (0-100), vfs_cache_pressure (0-200), sysctl config generation
 
 ## 9-Step Build Order
-1. Initialize sigma-system (runtime contract, health monitoring)
-2. Initialize sigma-kernel (boot information, CPU/memory detection)
-3. Configure sigma-bootloader (M1n1 bootflow, boot phases)
-4. Detect hardware with sigma-drivers (virtio devices, hardware inventory)
-5. Initialize display with sigma-display (modes, login flow)
-6. Configure power management with sigma-power (battery, sleep/resume)
-7. Manage sessions with sigma-persona (persona switching, save/restore)
-8. Validate configuration with sigma-adjustments (schema, migration)
+1. Initialize sigma-system (runtime contract, health monitoring, SafeInstaller)
+2. Initialize sigma-kernel (boot information, CPU/memory detection, BootInfo, FramebufferInfo)
+3. Configure sigma-bootloader (M1n1 bootflow, boot phases, boot menu)
+4. Detect hardware with sigma-drivers (virtio devices, hardware inventory, VirtioGPU/VirtioNetwork/VirtioSerial)
+5. Initialize display with sigma-display (modes, login flow, MainMenu, application launcher)
+6. Configure power management with sigma-power (battery, sleep/resume, ACPI)
+7. Manage sessions with sigma-persona (persona switching, save/restore lifecycle)
+8. Validate configuration with sigma-adjustments (schema, migration from v0.1/v0.2)
 9. Generate "Verified Today" release quality report
 
 ## Release Milestones
@@ -142,7 +142,7 @@ The following 103 design principles are embedded across all SigmaOS crates, ensu
 - P1: Minimal desktop contract with login (completed)
 - P1: Package ecosystem with dependency resolution (infrastructure ready)
 - P1: Release quality gates (VerifiedToday report implemented)
-- P2: Desktop and applications (enhanced MainMenu, Application launcher)
+- P2: Desktop and applications (enhanced MainMenu, Application launcher in progress)
 - P2: Advanced package management with auto-resolution (in progress)
 - Ongoing: Release quality and governance (gates framework ready)
 
