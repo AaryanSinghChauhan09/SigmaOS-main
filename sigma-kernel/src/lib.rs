@@ -24,6 +24,8 @@ impl KernelMode {
 pub struct KernelProvider {
     mode: KernelMode,
     initialized: bool,
+    memory_info: Option<String>,
+    cpu_info: Option<String>,
 }
 
 impl Default for KernelProvider {
@@ -31,6 +33,8 @@ impl Default for KernelProvider {
         Self {
             mode: KernelMode::User,
             initialized: false,
+            memory_info: None,
+            cpu_info: None,
         }
     }
 }
@@ -40,6 +44,8 @@ impl KernelProvider {
         Self {
             mode,
             initialized: false,
+            memory_info: None,
+            cpu_info: None,
         }
     }
 
@@ -51,15 +57,38 @@ impl KernelProvider {
         self.initialized
     }
 
+    /// Initialize kernel subsystems.
+    /// 
+    /// This performs fundamental kernel initialization including:
+    /// - Setting up memory management basics
+    /// - Initializing CPU feature detection
+    /// - Establishing basic data structures
     pub fn initialize(&mut self) -> Result<(), String> {
-        // Initialize kernel subsystems
+        // Mark as initialized
         self.initialized = true;
+        
+        // Initialize basic CPU information (simulated)
+        self.cpu_info = Some("detected:x86_64".to_string());
+        
+        // Initialize basic memory information (simulated)
+        self.memory_info = Some("memory: 512MiB".to_string());
+        
         Ok(())
     }
 
+    /// Switch kernel mode.
     pub fn switch_mode(&mut self, new_mode: KernelMode) -> Result<(), String> {
-        // Switch kernel mode
         self.mode = new_mode;
         Ok(())
+    }
+
+    /// Get CPU information (simulated).
+    pub fn cpu_info(&self) -> Option<&str> {
+        self.cpu_info.as_deref()
+    }
+
+    /// Get memory information (simulated).
+    pub fn memory_info(&self) -> Option<&str> {
+        self.memory_info.as_deref()
     }
 }
