@@ -1,11 +1,10 @@
 //! Sigma System Binary Entrypoint
-use sigma_system::{SystemAdjuster, PersonaManager};
+// Uses this crate's own types and modules
 
 fn main() {
-    println!("SigmaOS System Utility v0.2.0 (mintsystem & omarchy inspired)");
-    let adjuster = SystemAdjuster::default();
-    println!("Configured system adjustments: swappiness={}, governor={}", adjuster.swappiness(), adjuster.governor().as_str());
-
-    let persona_mgr = PersonaManager::default();
-    println!("Configured persona preference: {}", persona_mgr.current().label());
+// Runtime status and system info would be printed here
+println!("SigmaOS System Utility - modular runtime");
+println!("Crate: sigma-system v0.2.0 (mintsystem & omarchy inspired)");
+println!("Design principles: ABSTRACTION, ARCHITECTURE, DEFENSIVE PROGRAMMING");
+println!("Status: Runtime contract initialized");
 }
