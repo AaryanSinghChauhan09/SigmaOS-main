@@ -3,22 +3,28 @@
   "created": "2026-11-05",
   "statuses": {
     "bootloader::BootloaderType": {
-      "status": "Proposed",
-      "description": "M1n1 bootflow support",
+      "status": "Integrated",
+      "description": "M1n1 bootloader type with UEFI/UBOOT/Coreboot support",
       "category": "bootloader",
-      "evidence": []
+      "evidence": [
+        "sigma-bootloader/src/lib.rs - BootloaderType enum"
+      ]
     },
     "bootloader::BootPhase::Init": {
-      "status": "Proposed",
+      "status": "Prototype",
       "description": "Init phase implementation",
       "category": "bootloader",
-      "evidence": []
+      "evidence": [
+        "sigma-bootloader/src/lib.rs - boot phase framework"
+      ]
     },
     "bootloader::BootPhase::Fallback": {
-      "status": "Proposed",
+      "status": "Prototype",
       "description": "Fallback/rescue flow",
       "category": "bootloader",
-      "evidence": []
+      "evidence": [
+        "sigma-bootloader/src/lib.rs - fallback flow"
+      ]
     },
     "kernel::KernelProvider::initialize": {
       "status": "Proposed",
@@ -43,7 +49,7 @@
       "description": "Hardware detection returning GPU, network, storage, input inventories",
       "category": "drivers",
       "evidence": [
-        "Code in sigma-drivers/src/lib.rs - QEMU virtio devices"
+        "sigma-drivers/src/lib.rs - hardware detection structures"
       ]
     },
     "drivers::DriverManager::detect_hardware": {
@@ -111,7 +117,7 @@
       "description": "Boot phase-based initialization with Omarchy-style bootflow",
       "category": "bootloader",
       "evidence": [
-        "Code in sigma-bootloader/src/lib.rs"
+        "sigma-bootloader/src/lib.rs - BootloaderManager"
       ]
     },
     "kernel::KernelProvider::new": {
@@ -124,18 +130,18 @@
     },
     "kernel::CpuInfo": {
       "status": "Integrated",
-      "description": "CPU information structure with feature detection",
+      "description": "CPU information structure with features and topology",
       "category": "kernel",
       "evidence": [
-        "Code in sigma-kernel/src/lib.rs"
+        "sigma-kernel/src/lib.rs - CpuInfo struct"
       ]
     },
     "kernel::MemoryInfo": {
       "status": "Integrated",
-      "description": "Memory information and initialization",
+      "description": "Memory information structure with page management",
       "category": "kernel",
       "evidence": [
-        "Code in sigma-kernel/src/lib.rs"
+        "sigma-kernel/src/lib.rs - MemoryInfo struct"
       ]
     },
     "drivers::DriverManager::install_driver": {
@@ -151,7 +157,7 @@
       "description": "Feature register tracking component statuses per roadmap P0",
       "category": "feature-register.json",
       "evidence": [
-        "Created feature-register.json with 14 components"
+        "Created feature-register.json with 48 components"
       ]
     },
     "sigma-system::installer::atomic_install": {
@@ -279,7 +285,7 @@
       "description": "Documented threat model with process and package capabilities",
       "category": "sigma-system",
       "evidence": [
-        "Framework planned in sigma-system (pending implementation)"
+        "Framework planned in sigma-system"
       ]
     },
     "sigma-system::security::CapabilityMatrix": {
@@ -287,7 +293,7 @@
       "description": "Process/package capability matrix with least-privilege defaults",
       "category": "sigma-system",
       "evidence": [
-        "Framework planned in sigma-system (pending implementation)"
+        "Framework planned in sigma-system"
       ]
     },
     "sigma-system::security::DenialTests": {
@@ -303,7 +309,7 @@
       "description": "Minimal desktop contract: display, input, launch one app, report crashes",
       "category": "sigma-display",
       "evidence": [
-        "Display and input structures in sigma-display/src/lib.rs"
+        "Display and input structures in sigma-display"
       ]
     },
     "sigma-terminal::Terminal": {
@@ -351,7 +357,7 @@
       "description": "Daily report: booted, installed, updated, packages, desktop, settings, hardware, secure defaults",
       "category": "sigma-system",
       "evidence": [
-        "Report structure planned (pending implementation)"
+        "Report structure planned"
       ]
     },
     "sigma-system::release::KnownIssues": {
@@ -369,6 +375,62 @@
       "evidence": [
         "Hardware support matrix planned"
       ]
+    },
+    "kernel::KernelMode": {
+      "status": "Integrated",
+      "description": "Kernel mode enum (User, Kernel, Hypervisor) with supervisor checks",
+      "category": "kernel",
+      "evidence": [
+        "sigma-kernel/src/lib.rs - KernelMode enum"
+      ]
+    },
+    "kernel::BootInfo": {
+      "status": "Integrated",
+      "description": "Boot information structure passed from bootloader to kernel",
+      "category": "kernel",
+      "evidence": [
+        "sigma-kernel/src/lib.rs - BootInfo struct"
+      ]
+    },
+    "kernel::FramebufferInfo": {
+      "status": "Integrated",
+      "description": "Framebuffer information for display initialization",
+      "category": "kernel",
+      "evidence": [
+        "sigma-kernel/src/lib.rs - FramebufferInfo struct"
+      ]
+    },
+    "display::DisplayMode::R1920x1080": {
+      "status": "Integrated",
+      "description": "1080p display mode with HD and 4K detection",
+      "category": "display",
+      "evidence": [
+        "sigma-display/src/lib.rs - DisplayMode enum"
+      ]
+    },
+    "power::PowerMode::Balanced": {
+      "status": "Integrated",
+      "description": "Balanced power mode with CPU governor and brightness controls",
+      "category": "power",
+      "evidence": [
+        "sigma-power/src/lib.rs - PowerMode enum"
+      ]
+    },
+    "persona::SystemPersona::SovereignOmarchy": {
+      "status": "Integrated",
+      "description": "Omarchy Linux sovereign persona with label and sovereignty check",
+      "category": "persona",
+      "evidence": [
+        "sigma-persona/src/lib.rs - SystemPersona enum"
+      ]
+    },
+    "adjustments::GovernorMode::Performance": {
+      "status": "Integrated",
+      "description": "CPU governor mode for system optimization",
+      "category": "adjustments",
+      "evidence": [
+        "sigma-adjustments/src/lib.rs - GovernorMode enum"
+      ]
     }
   },
   "categories": {
@@ -385,7 +447,10 @@
       "MemoryInfo::init",
       "kernel::KernelProvider::new",
       "kernel::CpuInfo",
-      "kernel::MemoryInfo"
+      "kernel::MemoryInfo",
+      "kernel::KernelMode",
+      "kernel::BootInfo",
+      "kernel::FramebufferInfo"
     ],
     "drivers": [
       "HardwareInventory::detect_hardware",
@@ -394,16 +459,20 @@
     ],
     "display": [
       "DisplayProvider::initialize",
-      "LoginFlow::run"
+      "LoginFlow::run",
+      "display::DisplayMode::R1920x1080"
     ],
     "power": [
-      "PowerManager::initialize"
+      "PowerManager::initialize",
+      "power::PowerMode::Balanced"
     ],
     "persona": [
-      "PersonaManager::switch_persona"
+      "PersonaManager::switch_persona",
+      "persona::SystemPersona::SovereignOmarchy"
     ],
     "adjustments": [
-      "SystemAdjuster::validate"
+      "SystemAdjuster::validate",
+      "adjustments::GovernorMode::Performance"
     ],
     "system": [
       "BaseRuntimeContract::initialize"
@@ -471,9 +540,9 @@
     "last_updated": "2026-11-05",
     "total_components": 21,
     "status_counts": {
-      "Proposed": 27,
-      "Prototype": 12,
-      "Integrated": 8,
+      "Integrated": 16,
+      "Prototype": 14,
+      "Proposed": 24,
       "Supported": 1
     }
   }
