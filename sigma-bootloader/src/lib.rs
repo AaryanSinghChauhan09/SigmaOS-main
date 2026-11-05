@@ -100,4 +100,21 @@ impl BootloaderManager {
         self.current_phase = BootPhase::Init;
         Ok(())
     }
+
+    /// Enter fallback boot phase for rescue/fallback scenarios.
+    pub fn enter_fallback(&mut self) -> Result<(), String> {
+        self.current_phase = BootPhase::Fallback;
+        Ok(())
+    }
+
+    /// Exit fallback boot phase and return to normal initialization.
+    pub fn exit_fallback(&mut self) -> Result<(), String> {
+        self.current_phase = BootPhase::Init;
+        Ok(())
+    }
+
+    /// Whether the current phase is fallback.
+    pub fn is_in_fallback(&self) -> bool {
+        matches!(self.current_phase, BootPhase::Fallback)
+    }
 }

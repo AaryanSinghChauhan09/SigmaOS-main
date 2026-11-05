@@ -1,4 +1,4 @@
-/// SigmaOS Hardware Drivers
+// SigmaOS Hardware Drivers
 /// Inspired by Linux Mint mintdrivers and Omarchy Linux
 /// Provides hardware driver abstractions and implementations.
 
@@ -61,197 +61,243 @@ impl HardwareDriver {
     }
 }
 
-/// VirtioGPU represents a QEMU virtio GPU device with basic 2D acceleration.
-#[derive(Debug, Clone)]
-pub struct VirtioGPU {
-    /// Device status
-    status: DriverStatus,
-    /// Whether the device is initialized
-    initialized: bool,
-    /// Framebuffer width in pixels
-    framebuffer_width: u32,
-    /// Framebuffer height in pixels
-    framebuffer_height: u32,
-    /// Framebuffer pitch (bytes per row)
-    framebuffer_pitch: u32,
-    /// Framebuffer format (e.g., "RGBV")
-    framebuffer_format: String,
-}
+/// HardwareInventory detects and inventory all hardware components.
+///
+/// Inspired by Linux Mint's hardware detection and Omarchy Linux's inventory systems.
+/// Returns GPU, network, storage, and input device information.
+pub struct HardwareInventory;
 
-impl VirtioGPU {
-    /// Creates a new VirtioGPU instance.
-    pub fn new() -> Self {
-        Self {
-            status: DriverStatus::Initializing,
-            initialized: false,
-            framebuffer_width: 0,
-            framebuffer_height: 0,
-            framebuffer_pitch: 0,
-            framebuffer_format: String::new(),
+impl HardwareInventory {
+    /// Detect all hardware components in the system.
+    ///
+    /// Returns a struct containing detected hardware information.
+    pub fn detect_hardware() -> HardwareInventoryResult {
+        // Detect GPU (virtio or other)
+        let gpu = Self::detect_gpu();
+        // Detect network (virtio or other)
+        let network = Self::detect_network();
+        // Detect storage controllers
+        let storage = Self::detect_storage();
+        // Detect input devices
+        let input = Self::detect_input();
+
+        HardwareInventoryResult {
+            gpu,
+            network,
+            storage,
+            input,
         }
     }
 
-    /// Initializes the virtio GPU device.
-    pub fn initialize(&mut self) -> Result<(), String> {
-        // Perform virtio GPU initialization
-        self.status = DriverStatus::Loaded;
-        self.initialized = true;
-        self.framebuffer_width = 1920;
-        self.framebuffer_height = 1080;
-        self.framebuffer_pitch = 7680; // 1920 * 4 bytes per pixel
-        self.framebuffer_format = "RGBV".to_string();
-        Ok(())
-    }
-
-    /// Sets the framebuffer mode.
-    pub fn set_mode(&mut self, width: u32, height: u32) -> Result<(), String> {
-        if !self.initialized {
-            return Err("VirtioGPU not initialized".to_string());
+    /// Detect GPU hardware.
+    fn detect_gpu() -> GPUSpec {
+        // In a real implementation, this would scan PCI devices
+        // For now, return a default virtio GPU specification
+        GPUSpec {
+            vendor: "QEMU".to_string(),
+            model: "Virtio GPU".to_string(),
+            framebuffer_width: 1920,
+            framebuffer_height: 1080,
+            framebuffer_format: "RGBV".to_string(),
+            is_virtio: true,
         }
-        self.framebuffer_width = width;
-        self.framebuffer_height = height;
-        self.framebuffer_pitch = width * 4; // Assuming 32-bit RGBA
-        Ok(())
     }
 
-    /// Gets the framebuffer information.
-    pub fn framebuffer_info(&self) -> (&u32, &u32, &u32, &String) {
-        (&self.framebuffer_width, &self.framebuffer_height, &self.framebuffer_pitch, &self.framebuffer_format)
-    }
-
-    /// Whether the device is initialized and ready.
-    pub fn is_initialized(&self) -> bool {
-        self.initialized
-    }
-
-    /// Returns the device status as a string.
-    pub fn status_str(&self) -> &'static str {
-        self.status.as_str()
-    }
-}
-
-/// VirtioNetwork represents a QEMU virtio network (ethernet) device.
-#[derive(Debug, Clone)]
-pub struct VirtioNetwork {
-    /// Device status
-    status: DriverStatus,
-    /// Whether the device is initialized
-    initialized: bool,
-    /// MAC address of the network interface
-    mac_address: String,
-    /// Whether the link is up
-    link_up: bool,
-}
-
-impl VirtioNetwork {
-    /// Creates a new VirtioNetwork instance.
-    pub fn new() -> Self {
-        Self {
-            status: DriverStatus::Initializing,
-            initialized: false,
+    /// Detect network hardware.
+    fn detect_network() -> NetworkSpec {
+        // In a real implementation, this would scan PCI devices
+        // For now, return a default virtio network specification
+        NetworkSpec {
+            vendor: "QEMU".to_string(),
+            model: "Virtio Network".to_string(),
             mac_address: "00:11:22:33:44:55".to_string(),
-            link_up: false,
+            is_virtio: true,
         }
     }
 
-    /// Initializes the virtio network device.
-    pub fn initialize(&mut self) -> Result<(), String> {
-        // Perform virtio network initialization
-        self.status = DriverStatus::Loaded;
-        self.initialized = true;
-        self.link_up = true;
-        Ok(())
-    }
-
-    /// Sends data over the network.
-    pub fn send(&mut self, _data: &[u8]) -> Result<usize, String> {
-        if !self.initialized {
-            return Err("VirtioNetwork not initialized".to_string());
+    /// Detect storage controllers.
+    fn detect_storage() -> StorageSpec {
+        // In a real implementation, this would scan PCI/ SATA/ NVMe devices
+        // For now, return default specification
+        StorageSpec {
+            vendor: "QEMU".to_string(),
+            model: "virtio-blk".to_string(),
+            capacity_gb: 0, // Will be populated with real detection
+            is_virtio: true,
         }
-        // In a real implementation, this would send data via virtio ring
-        Ok(_data.len())
     }
 
-    /// Receives data from the network.
-    pub fn receive(&mut self, _buffer: &mut [u8]) -> Result<usize, String> {
-        if !self.initialized {
-            return Err("VirtioNetwork not initialized".to_string());
+    /// Detect input devices.
+    fn detect_input() -> InputSpec {
+        // In a real implementation, this would scan USB/PS/2 devices
+        // For now, return default specification
+        InputSpec {
+            vendor: "QEMU".to_string(),
+            model: "QEMU Keyboard/Mouse".to_string(),
+            is_virtio: true,
         }
-        // In a real implementation, this would receive data via virtio ring
-        Ok(0)
-    }
-
-    /// Whether the device is initialized and the link is up.
-    pub fn is_ready(&self) -> bool {
-        self.initialized && self.link_up
-    }
-
-    /// Returns the MAC address.
-    pub fn mac_address(&self) -> &str {
-        &self.mac_address
-    }
-
-    /// Returns the device status as a string.
-    pub fn status_str(&self) -> &'static str {
-        self.status.as_str()
     }
 }
 
-/// VirtioSerial represents a QEMU virtio serial console device.
+/// Result of hardware detection containing all hardware specifications.
 #[derive(Debug, Clone)]
-pub struct VirtioSerial {
-    /// Device status
-    status: DriverStatus,
-    /// Whether the device is initialized
-    initialized: bool,
-    /// Whether the console is active
-    active: bool,
+pub struct HardwareInventoryResult {
+    /// GPU specification
+    pub gpu: GPUSpec,
+    /// Network specification
+    pub network: NetworkSpec,
+    /// Storage specification
+    pub storage: StorageSpec,
+    /// Input device specification
+    pub input: InputSpec,
 }
 
-impl VirtioSerial {
-    /// Creates a new VirtioSerial instance.
+/// GPU specification from hardware detection.
+#[derive(Debug, Clone)]
+pub struct GPUSpec {
+    /// Vendor string
+    pub vendor: String,
+    /// Model string
+    pub model: String,
+    /// Framebuffer width in pixels
+    pub framebuffer_width: u32,
+    /// Framebuffer height in pixels
+    pub framebuffer_height: u32,
+    /// Framebuffer format (e.g., "RGBV")
+    pub framebuffer_format: String,
+    /// Whether the GPU is a virtio device
+    pub is_virtio: bool,
+}
+
+/// Network specification from hardware detection.
+#[derive(Debug, Clone)]
+pub struct NetworkSpec {
+    /// Vendor string
+    pub vendor: String,
+    /// Model string
+    pub model: String,
+    /// MAC address of the network interface
+    pub mac_address: String,
+    /// Whether the network is a virtio device
+    pub is_virtio: bool,
+}
+
+/// Storage specification from hardware detection.
+#[derive(Debug, Clone)]
+pub struct StorageSpec {
+    /// Vendor string
+    pub vendor: String,
+    /// Model string
+    pub model: String,
+    /// Storage capacity in GB
+    pub capacity_gb: u64,
+    /// Whether the storage is a virtio device
+    pub is_virtio: bool,
+}
+
+/// Input device specification from hardware detection.
+#[derive(Debug, Clone)]
+pub struct InputSpec {
+    /// Vendor string
+    pub vendor: String,
+    /// Model string
+    pub model: String,
+    /// Whether the input is a virtio device
+    pub is_virtio: bool,
+}
+
+/// DriverManager manages hardware drivers and detection.
+///
+/// Inspired by Linux Mint's driver manager and Omarchy Linux's driver framework.
+pub struct DriverManager {
+    /// Detected hardware inventory
+    hardware_inventory: HardwareInventoryResult,
+    /// List of loaded drivers
+    loaded_drivers: Vec<String>,
+}
+
+impl DriverManager {
+    /// Creates a new DriverManager instance.
     pub fn new() -> Self {
+        let inventory = HardwareInventory::detect_hardware();
         Self {
-            status: DriverStatus::Initializing,
-            initialized: false,
-            active: false,
+            hardware_inventory: inventory,
+            loaded_drivers: Vec::new(),
         }
     }
 
-    /// Initializes the virtio serial device.
-    pub fn initialize(&mut self) -> Result<(), String> {
-        // Perform virtio serial initialization
-        self.status = DriverStatus::Loaded;
-        self.initialized = true;
-        self.active = true;
+    /// Get the detected hardware inventory.
+    pub fn hardware_inventory(&self) -> &HardwareInventoryResult {
+        &self.hardware_inventory
+    }
+
+    /// Load a driver by name.
+    pub fn load_driver(&mut self, driver_name: &str) -> Result<(), String> {
+        // Check if driver is already loaded
+        if self.loaded_drivers.contains(&driver_name.to_string()) {
+            return Err(format!("Driver {} already loaded", driver_name));
+        }
+
+        // Mark driver as loaded
+        self.loaded_drivers.push(driver_name.to_string());
+
+        // In a real implementation, we would actually load the driver
+        // For now, just mark it
         Ok(())
     }
 
-    /// Writes data to the serial console.
-    pub fn write(&mut self, _data: &[u8]) -> Result<usize, String> {
-        if !self.active {
-            return Err("VirtioSerial not active".to_string());
+    /// Unload a driver by name.
+    pub fn unload_driver(&mut self, driver_name: &str) -> Result<(), String> {
+        // Check if driver is loaded
+        let index = self.loaded_drivers.iter().position(|name| name == driver_name);
+
+        match index {
+            Some(idx) => {
+                self.loaded_drivers.remove(idx);
+                Ok(())
+            }
+            None => Err(format!("Driver {} not loaded", driver_name)),
         }
-        // In a real implementation, this would write to the virtio serial ring
-        Ok(_data.len())
     }
 
-    /// Reads data from the serial console.
-    pub fn read(&mut self, _buffer: &mut [u8]) -> Result<usize, String> {
-        if !self.active {
-            return Err("VirtioSerial not active".to_string());
+    /// Check if a driver is loaded.
+    pub fn is_driver_loaded(&self, driver_name: &str) -> bool {
+        self.loaded_drivers.contains(&driver_name.to_string())
+    }
+
+    /// Install a driver with rollback support.
+    ///
+    /// Installs a driver and provides rollback capability if the installation fails.
+    pub fn install_driver(&mut self, driver_name: &str, driver_path: &str) -> Result<(), String> {
+        // First detect hardware to ensure compatibility
+        let inventory = HardwareInventory::detect_hardware();
+
+        // Check if the hardware supports this driver
+        // In a real implementation, this would check hardware IDs against driver support
+        self.hardware_inventory = inventory;
+
+        // Load the driver
+        self.load_driver(driver_name)?;
+
+        // In a real implementation, we would copy the driver to the right location
+        // and set up kernel modules. For now, just mark as loaded.
+        Ok(())
+    }
+
+    /// Rollback a driver installation.
+    ///
+    /// Unloads a previously installed driver and restores the previous state.
+    pub fn rollback_driver(&mut self, driver_name: &str) -> Result<(), String> {
+        // Check if driver is loaded
+        if !self.is_driver_loaded(driver_name) {
+            return Err(format!("Driver {} not loaded, nothing to rollback", driver_name));
         }
-        // In a real implementation, this would read from the virtio serial ring
-        Ok(0)
-    }
 
-    /// Whether the device is active and ready for I/O.
-    pub fn is_active(&self) -> bool {
-        self.initialized && self.active
-    }
+        // Unload the driver
+        self.unload_driver(driver_name)?;
 
-    /// Returns the device status as a string.
-    pub fn status_str(&self) -> &'static str {
-        self.status.as_str()
+        // In a real implementation, we would restore the previous driver version
+        // or revert configuration changes. For now, just unload.
+        Ok(())
     }
 }
