@@ -7,7 +7,7 @@
       "description": "M1n1 bootloader type enum with UEFI/UBOOT/Coreboot support",
       "category": "bootloader",
       "evidence": [
-        "sigma-bootloader/src/lib.rs - BootloaderType enum"
+        "sigma-bootloader/src/lib.rs - BootloaderType enum with as_str()"
       ]
     },
     "bootloader::BootPhase::Init": {
@@ -20,7 +20,7 @@
     },
     "bootloader::BootPhase::Fallback": {
       "status": "Prototype",
-      "description": "Fallback/rescue flow with rescue entry selection",
+      "description": "Fallback/rescue flow",
       "category": "bootloader",
       "evidence": [
         "sigma-bootloader/src/lib.rs - fallback flow structures"
@@ -49,7 +49,7 @@
       "description": "Hardware detection returning GPU, network, storage, input inventories",
       "category": "drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - hardware detection structures and virtio enumeration"
+        "sigma-drivers/src/lib.rs - hardware detection structures"
       ]
     },
     "drivers::DriverManager::detect_hardware": {
@@ -114,10 +114,10 @@
     },
     "bootloader::BootloaderManager::initialize": {
       "status": "Integrated",
-      "description": "Boot phase-based initialization with Omarchy-style bootflow",
+      "description": "Boot phase-based initialization with initialization state tracking",
       "category": "bootloader",
       "evidence": [
-        "sigma-bootloader/src/lib.rs - BootloaderManager::initialize method"
+        "sigma-bootloader/src/lib.rs - BootloaderManager with initialized flag"
       ]
     },
     "kernel::KernelProvider::new": {
@@ -157,7 +157,7 @@
       "description": "Feature register tracking component statuses per roadmap P0",
       "category": "feature-register.json",
       "evidence": [
-        "Created feature-register.json with 55 components tracked (Proposed/Prototype/Integrated/Supported)"
+        "Created feature-register.json with 57 components tracked (Proposed/Prototype/Integrated/Supported)"
       ]
     },
     "sigma-system::installer::atomic_install": {
@@ -165,7 +165,7 @@
       "description": "Atomic installation with rollback guarantee and preflight checks",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/installer.rs - module structure with SafeInstaller struct"
+        "sigma-system/src/installer.rs - SafeInstaller module structure"
       ]
     },
     "sigma-system::installer::atomic_update": {
@@ -189,7 +189,7 @@
       "description": "Begin update operation with snapshot for rollback",
       "category": "sigma-system",
       "evidence": [
-        "sigma-system/src/installer.rs - UpdateManager::begin_update method"
+        "sigma-system/src/installer.rs - UpdateManager module structure"
       ]
     },
     "sigma-kernel::boot_info::BootInfo": {
@@ -245,7 +245,7 @@
       "description": "QEMU virtio GPU support with basic 2D acceleration",
       "category": "sigma-drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - virtio device enumeration structures"
+        "sigma-drivers/src/lib.rs - virtio device enumeration"
       ]
     },
     "sigma-drivers::hw::VirtioNetwork": {
@@ -253,7 +253,7 @@
       "description": "QEMU virtio network interface with ethernet support",
       "category": "sigma-drivers",
       "evidence": [
-        "sigma-drivers/src/lib.rs - network device driver structures"
+        "sigma-drivers/src/lib.rs - network device driver"
       ]
     },
     "sigma-drivers::hw::VirtioSerial": {
@@ -309,7 +309,7 @@
       "description": "Minimal desktop contract: display, input, launch one app, report crashes",
       "category": "sigma-display",
       "evidence": [
-        "Display and input structures in sigma-display/src/lib.rs - DisplayMode and input handling"
+        "Display and input structures in sigma-display/src/lib.rs"
       ]
     },
     "sigma-terminal::Terminal": {
@@ -378,10 +378,10 @@
     },
     "kernel::KernelMode": {
       "status": "Integrated",
-      "description": "Kernel mode enum (User, Kernel, Hypervisor) with supervisor checks",
+      "description": "Kernel mode enum (User, Kernel, Hypervisor) with as_str() method",
       "category": "kernel",
       "evidence": [
-        "sigma-kernel/src/lib.rs - KernelMode enum"
+        "sigma-kernel/src/lib.rs - KernelMode enum with as_str()"
       ]
     },
     "kernel::BootInfo": {
@@ -405,7 +405,7 @@
       "description": "1080p display mode with HD and 4K detection",
       "category": "display",
       "evidence": [
-        "sigma-display/src/lib.rs - DisplayMode enum"
+        "sigma-display/src/lib.rs - DisplayMode enum with as_str()"
       ]
     },
     "power::PowerMode::Balanced": {
@@ -413,15 +413,15 @@
       "description": "Balanced power mode with CPU governor and brightness controls",
       "category": "power",
       "evidence": [
-        "sigma-power/src/lib.rs - PowerMode enum"
+        "sigma-power/src/lib.rs - PowerMode enum with as_str()"
       ]
     },
     "persona::SystemPersona::SovereignOmarchy": {
       "status": "Integrated",
-      "description": "Omarchy Linux sovereign persona with label and sovereignty check",
+      "description": "Omarchy Linux sovereign persona with label() method and sovereignty check",
       "category": "persona",
       "evidence": [
-        "sigma-persona/src/lib.rs - SystemPersona enum"
+        "sigma-persona/src/lib.rs - SystemPersona enum with label() method"
       ]
     },
     "adjustments::GovernorMode::Performance": {
@@ -429,7 +429,7 @@
       "description": "CPU governor mode for system optimization",
       "category": "adjustments",
       "evidence": [
-        "sigma-adjustments/src/lib.rs - GovernorMode enum"
+        "sigma-adjustments/src/lib.rs - GovernorMode enum with as_str()"
       ]
     },
     "adjustments::ConfigValidator::validate": {
