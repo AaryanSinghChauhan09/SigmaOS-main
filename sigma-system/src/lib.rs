@@ -131,3 +131,6 @@ impl ConfigStorageContract {
     pub fn save(&self) -> Result<(), SigmaError> { Ok(()) }
     pub fn get(&self, key: &str) -> Option<&String> { self.config_data.get(key) }
 }
+
+pub mod security;
+pub mod release;
